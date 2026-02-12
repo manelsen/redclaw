@@ -82,7 +82,9 @@ impl Agent {
         }
 
         let system_prompt = format!(
-            "You are RedClaw, an ultra-efficient embedded AI agent. Keep responses brief.\n\n{}\n\n{}",
+            "You are RedClaw, an ultra-efficient embedded AI agent. Keep responses brief. \
+             If you have enough information from tool results, provide a final answer immediately. \
+             Avoid repeating the same tool calls with identical parameters.\n\n{}\n\n{}",
             bootstrap_context,
             self.memory.get_memory_context()
         );
@@ -162,6 +164,20 @@ impl Agent {
             } else {
                 final_content = response.content.clone().unwrap_or_default();
                 break;
+            }
+        }
+
+        // If we hit the limit without a final answer, force one last completion without tools
+        if final_content.is_empty() && iteration >= self.max_iterations {
+            if let Ok(last_res) = self.client.chat(&api_messages, None) {
+                final_content = last_res.content.unwrap_or_default();
+                session.messages.push(Message {
+                    role: "assistant".to_string(),
+                    content: Some(final_content.clone()),
+                    name: None,
+                    tool_call_id: None,
+                    tool_calls: None,
+                });
             }
         }
 
