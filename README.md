@@ -10,14 +10,13 @@ Inspired by the pioneering work of **OpenClaw** and **nanobot**, and directly ba
 
 | Feature | [OpenClaw](https://github.com/OpenClaw/OpenClaw) | [nanobot](https://github.com/HKUDS/nanobot) | [PicoClaw](https://github.com/sipeed/picoclaw) | **RedClaw** 🦀 |
 | :--- | :--- | :--- | :--- | :--- |
-| **Language** | Node.js (JavaScript) | Python | Go (Golang) | **Rust** (Stable) |
-| **Runtime** | Node.js Engine | Python Interpreter | Go Runtime (GC) | **Native Binary** |
+| **Primary Goal** | Feature Richness | **Code Simplicity** | **Embedded Hardware** | **Bit-Golfing Efficiency** |
+| **Language** | Node.js | Python | Go | **Rust** |
+| **Code Size** | ~430k+ LOC | **~4k LOC** | ~6k LOC | **~2k LOC** |
 | **RAM Usage** | ~1GB - 2GB+ | ~45MB - 100MB | **< 10MB** | **~2.2MB (RSS)** |
-| **Binary Size** | N/A (Scripts) | N/A (Scripts) | ~8MB - 12MB | **~650KB** |
-| **Architecture** | ReAct / Modules | ReAct / Modular | ReAct / Lightweight | **ReAct / Streaming** |
+| **Binary Size** | N/A (Scripts) | N/A (Scripts) | ~8MB | **~650KB** |
 | **Networking** | Native Node SDKs | Native Python Libs | Native Go `http` | **Curl Offload** |
-| **Persistence** | Database / JSON | JSON / Files | JSON / Markdown | **Streamed JSON** |
-| **Hardware** | Cloud / Desktop | Server / Desktop | Embedded (256MB) | **Tiny SoC (8MB+)** |
+| **Hardware** | Cloud / Desktop | Server / Desktop | LicheeRV (256MB) | **Tiny SoC (8MB+)** |
 
 ---
 
