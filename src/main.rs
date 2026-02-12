@@ -85,7 +85,7 @@ fn run_onboard() -> Result<()> {
     };
 
     let or_key = ask("Enter OpenRouter API Key", "");
-    let model = ask("Enter Model Name", "google/gemini-2.0-flash-exp:free");
+    let model = ask("Enter Model Name", "arcee-ai/trinity-large-preview:free");
     let brave_key = ask("Enter Brave Search API Key (optional)", "");
     let tg_token = ask("Enter Telegram Bot Token (optional)", "");
     let tg_user = ask("Enter your Telegram ID/Username (for safety)", "your_id");

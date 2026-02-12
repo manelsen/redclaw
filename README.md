@@ -79,7 +79,7 @@ RedClaw is provider-agnostic but highly recommends **OpenRouter** for its stabil
   "agents": {
     "defaults": {
       "workspace": "./workspace",
-      "model": "google/gemini-2.0-flash-exp:free"
+      "model": "arcee-ai/trinity-large-preview:free"
     }
   },
   "providers": {
