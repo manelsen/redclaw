@@ -1,0 +1,17 @@
+# Rust / Cargo
+/target
+/Cargo.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project Specific
+workspace/
+config.json
+/tests/temp/
+
+# Logs
+*.log
