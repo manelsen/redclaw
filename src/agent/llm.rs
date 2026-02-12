@@ -49,9 +49,12 @@ pub struct LLMClient {
 impl LLMClient {
     pub fn new(config: &ProviderConfig, default_base: &str, model: &str) -> Self {
         Self {
-            api_key: config.api_key.clone(),
-            api_base: config.api_base.clone().unwrap_or_else(|| default_base.to_string()),
-            model: model.to_string(),
+            api_key: config.api_key.trim().to_string(),
+            api_base: config.api_base.clone()
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty())
+                .unwrap_or_else(|| default_base.to_string()),
+            model: model.trim().to_lowercase(),
         }
     }
 
@@ -82,6 +85,7 @@ impl LLMClient {
         use std::process::Stdio;
         let mut child = Command::new("curl")
             .arg("-s")
+            .arg("-L") // Follow redirects
             .arg("-X").arg("POST")
             .arg("--connect-timeout").arg("15")
             .arg("--max-time").arg("120")
@@ -109,6 +113,10 @@ impl LLMClient {
 
         let stdout_str = String::from_utf8_lossy(&output.stdout);
         
+        if stdout_str.trim().is_empty() {
+            return Err(anyhow!("LLM Provider returned an empty response. Check your API key and URL base: {}", self.api_base));
+        }
+
         // Check for API errors before parsing as success
         let val: Value = serde_json::from_str(&stdout_str)
             .map_err(|e| anyhow!("Failed to parse JSON response: {}. Body: {}", e, stdout_str))?;

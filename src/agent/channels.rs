@@ -54,6 +54,7 @@ impl TelegramBot {
             
             let child = Command::new("curl")
                 .arg("-s")
+                .arg("-L")
                 .arg("--connect-timeout").arg("10")
                 .arg("--max-time").arg("45")
                 .arg(url)
@@ -124,7 +125,7 @@ impl TelegramBot {
 
         // Typing indicator
         let _ = Command::new("curl")
-            .arg("-s").arg("-X").arg("POST")
+            .arg("-s").arg("-L").arg("-X").arg("POST")
             .arg("--connect-timeout").arg("5")
             .arg("--max-time").arg("10")
             .arg(format!("https://api.telegram.org/bot{}/sendChatAction", self.token))
@@ -170,6 +171,7 @@ impl TelegramBot {
 
             let mut child = Command::new("curl")
                 .arg("-s")
+                .arg("-L")
                 .arg("-X").arg("POST")
                 .arg("--connect-timeout").arg("10")
                 .arg("--max-time").arg("30")
