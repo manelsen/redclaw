@@ -12,7 +12,7 @@ Inspired by the pioneering work of **OpenClaw** and **nanobot**, and directly ba
 | :--- | :--- | :--- | :--- | :--- |
 | **Language** | Node.js (JavaScript) | Python | Go (Golang) | **Rust** (Stable) |
 | **Runtime** | Node.js Engine | Python Interpreter | Go Runtime (GC) | **Native Binary** |
-| **RAM Usage** | ~1GB - 2GB+ | ~45MB - 100MB | ~15MB - 30MB | **~2.2MB (RSS)** |
+| **RAM Usage** | ~1GB - 2GB+ | ~45MB - 100MB | **< 10MB** | **~2.2MB (RSS)** |
 | **Binary Size** | N/A (Scripts) | N/A (Scripts) | ~8MB - 12MB | **~650KB** |
 | **Architecture** | ReAct / Modules | ReAct / Modular | ReAct / Lightweight | **ReAct / Streaming** |
 | **Networking** | Native Node SDKs | Native Python Libs | Native Go `http` | **Curl Offload** |
