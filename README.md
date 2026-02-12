@@ -12,7 +12,7 @@ Inspired by the pioneering work of **OpenClaw** and **nanobot**, and directly ba
 | :--- | :--- | :--- | :--- | :--- |
 | **Primary Goal** | Feature Richness | **Code Simplicity** | **Embedded Hardware** | **Bit-Golfing Efficiency** |
 | **Language** | Node.js | Python | Go | **Rust** |
-| **Code Size** | ~430k+ LOC | **~4k LOC** | ~6k LOC | **~2k LOC** |
+| **Code Size** | ~430k+ LOC | **~4k LOC** | ~6k LOC | **~1.3k LOC** |
 | **RAM Usage** | ~1GB - 2GB+ | ~45MB - 100MB | **< 10MB** | **~2.2MB (RSS)** |
 | **Binary Size** | N/A (Scripts) | N/A (Scripts) | ~8MB | **~650KB** |
 | **Networking** | Native Node SDKs | Native Python Libs | Native Go `http` | **Curl Offload** |
