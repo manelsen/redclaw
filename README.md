@@ -1,105 +1,110 @@
-# RedClaw 🦀
+# RedClaw 🦀 — The 2MB RAM AI Agent
 
-**RedClaw** is an ultra-lightweight personal AI agent written in Rust, specifically optimized for embedded systems and hardware with extremely limited resources (target: **< 2MB RAM**).
+**RedClaw** is an ultra-efficient, memory-safe personal AI agent written in Rust. It is specifically designed to run on the most resource-constrained hardware imaginable, such as $5 RISC-V or ARM SoCs, with a target footprint of **less than 2MB of RAM**.
 
-Inspired by [OpenClaw](https://github.com/OpenClaw) and directly based on the architecture of [PicoClaw](https://github.com/sipeed/picoclaw), RedClaw brings the power of LLMs to the smallest Linux-based boards (RISC-V/ARM) with a focus on memory safety, zero-cost abstractions, and operational security.
+Inspired by the pioneering work of **OpenClaw** and **nanobot**, and directly based on the architecture of **PicoClaw**, RedClaw represents the "bit-golfing" extreme of the AI agent world.
 
-## 🚀 Features
+---
 
-- **Extreme Portability**: Statically linked binary support via `musl` for ARM64 (Android/Termux) and RISC-V.
-- **Resource Optimized**: 
-  - Binary size: ~1.9MB (optimized release).
-  - RAM usage: Strict memory limits (256KB file read buffers) to fit in 2MB total system RAM.
-- **Multi-Provider Support**: Native compatibility with OpenAI, Google Gemini (via compatibility layer), OpenRouter, and Zhipu.
-- **Persistent Flat-File Memory**: Uses simple Markdown files for long-term memory and daily logs.
-- **Safety Guards**: 
-  - **Command Guard**: Built-in blacklist for dangerous shell commands (e.g., `rm -rf`).
-  - **RAM Guard**: Automatic truncation of large files and command outputs.
-- **Tool System**: Built-in capabilities for file manipulation, shell execution, and web search/fetch.
+## 📊 Comparison: The Path to 2MB
 
-## 🛠️ Installation
+| Feature | OpenClaw | nanobot | PicoClaw | RedClaw 🦀 |
+| :--- | :--- | :--- | :--- | :--- |
+| **Language** | Python / Node.js | Go | Go | **Rust** (Stable) |
+| **RAM Target** | ~100MB+ | ~50MB | ~15MB | **< 2MB** |
+| **Binary Size** | N/A (Scripts) | ~10MB | ~8MB | **~650KB** |
+| **Networking** | Native HTTP | Native HTTP | Native HTTP | **Curl Offload** |
+| **Memory Management** | GC-based | GC-based | GC-based | **Zero-Allocation** |
+| **Target Hardware** | Desktop / Cloud | Desktop / Server | LicheeRV (256MB) | **Milk-V Duo (64MB)** |
+
+---
+
+## 🧠 System Logic
+
+RedClaw follows a **ReAct (Reasoning + Acting)** pattern, but optimizes every step for embedded survival:
+
+1.  **Exoskeleton (Rust Core)**: Provides a memory-safe, statically linked binary that avoids the overhead of a Garbage Collector or heavy runtimes.
+2.  **The Brain (Provider Logic)**: Communicates with OpenRouter, Gemini, or OpenAI using a **Streaming JSON Parser**. Instead of loading full API responses into RAM, RedClaw parses them byte-by-byte.
+3.  **Curl Offloading**: Networking and TLS (encryption) are the biggest RAM consumers. RedClaw offloads these to the system's `curl` process, using pipes (STDIN/STDOUT) to stream data. This keeps the agent's RSS minimal.
+4.  **Memory Persistence**: Uses a simple flat-file system. Long-term context is stored in `MEMORY.md`, while daily logs are organized by date. No Vector DB required.
+5.  **Safety Guards**: Includes a substring-based blacklist for shell commands and strict buffer limits (256KB) for file operations to prevent OOM (Out of Memory) crashes.
+6.  **Malloc Trim**: After every interaction, RedClaw forces the OS to reclaim unused heap memory using `malloc_trim`.
+
+---
+
+## 🛠️ Installation & Build
 
 ### Prerequisites
 - **Rust** (Latest Stable)
-- **Target Toolchains** (Optional for cross-compilation):
-  ```bash
-  rustup target add aarch64-unknown-linux-musl # For ARM64/Android
-  rustup target add x86_64-unknown-linux-musl  # For Static x86
-  ```
+- **curl** (Installed on the target system)
 
-### Build
-To build the optimized production binary:
+### Quick Start
 ```bash
-cargo build --release
+make          # Compiles and creates the ./redclaw binary
+./redclaw onboard  # Interactive wizard to set up your API keys
 ```
-The binary will be available at `target/release/redclaw`.
+
+---
+
+## 📖 Usage Examples
+
+### Interactive Mode (Terminal)
+```bash
+./redclaw -i
+```
+*Visual output includes a sleek "envelope" style with real-time RAM telemetry.*
+
+### Telegram Bot Mode
+```bash
+./redclaw -t
+```
+*Turn your hardware into a 24/7 autonomous bot.*
+
+### Single Instruction
+```bash
+./redclaw -m "Check my disk space and summarize it."
+```
+
+---
 
 ## ⚙️ Configuration
 
-Copy the example configuration and add your API keys:
-```bash
-cp config.example.json config.json
-```
+RedClaw prefers **OpenRouter** for its high compatibility and stability, but supports any OpenAI-compatible endpoint.
 
-Example `config.json` for Gemini:
 ```json
 {
   "agents": {
     "defaults": {
       "workspace": "./workspace",
-      "model": "gemini-1.5-flash"
+      "model": "google/gemini-2.0-flash-exp:free"
     }
   },
   "providers": {
-    "gemini": {
-      "api_key": "YOUR_GEMINI_API_KEY"
+    "openrouter": {
+      "api_key": "sk-or-v1-..."
     }
   }
 }
 ```
 
-## 📖 Usage
+---
 
-### Interactive Mode
-Engage in a continuous session with the agent:
-```bash
-./redclaw -i
-```
+## 🤝 Contributing
 
-### Single Command
-Send a direct instruction:
-```bash
-./redclaw -m "Read technical_specs.md and summarize the memory constraints."
-```
-
-### Telegram Bot Mode
-Run the agent as a Telegram bot (requires token in config.json):
-```bash
-./redclaw -t
-```
-
-## 🤝 Contribution
-
-Contributions are welcome! Since RedClaw focuses on low-resource optimization:
-1. Ensure new features do not significantly increase the binary size.
-2. Prefer `std` and zero-dependency implementations where possible.
-3. Maintain the memory-safe philosophy (no `unsafe` blocks without strict justification).
-
-### Development
-1. Fork the repository.
-2. Create your feature branch (`git checkout -b feature/amazing-feature`).
-3. Commit your changes (`git commit -m 'Add amazing feature'`).
-4. Push to the branch (`git push origin feature/amazing-feature`).
-5. Open a Pull Request.
+We are in a constant state of "Bit Golfing". Contributions should focus on:
+- Reducing binary size.
+- Minimizing heap allocations.
+- Enhancing tool safety.
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+RedClaw is released under the **MIT License**.
 
-## 🙏 Credits & Inspiration
+## 🙏 Credits
 
-- **[PicoClaw](https://github.com/sipeed/picoclaw)**: The original Go implementation that defined the lightweight agent loop and tool registry.
-- **[OpenClaw](https://github.com/OpenClaw)**: For the inspiration of open, community-driven AI agents for all.
+- **[OpenClaw](https://github.com/OpenClaw)**: For the inspiration of open AI agents.
+- **[nanobot](https://github.com/HKUDS/nanobot)**: For the original lightweight agent concepts.
+- **[PicoClaw](https://github.com/sipeed/picoclaw)**: For the architecture and embedded focus.
 
 ---
-*Built with ❤️ in Rust for the embedded world.*
+*Built with precision in Rust for the embedded frontier.*
