@@ -107,12 +107,17 @@ impl TelegramBot {
 
     fn handle_message(&self, agent: &mut Agent, msg: TgMessage) -> Result<()> {
         let chat_id = msg.chat.id;
-        let text = msg.text.unwrap_or_default();
+        let text = msg.text.unwrap_or_default().trim().to_string();
         let user_id = msg.from.as_ref().map(|u| u.id.to_string()).unwrap_or_default();
         let username = msg.from.as_ref().and_then(|u| u.username.clone()).unwrap_or_else(|| "unknown".to_string());
 
         if !self.allowed_users.is_empty() && !self.allowed_users.contains(&user_id) && !self.allowed_users.contains(&username) {
             println!("Unauthorized user: {}", username);
+            return Ok(());
+        }
+
+        if text.is_empty() {
+            self.send_message(chat_id, "I can only process text messages for now. Please send me a question or command.")?;
             return Ok(());
         }
 

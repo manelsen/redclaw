@@ -48,12 +48,18 @@ pub struct LLMClient {
 
 impl LLMClient {
     pub fn new(config: &ProviderConfig, default_base: &str, model: &str) -> Self {
+        let mut base = config.api_base.clone()
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
+            .unwrap_or_else(|| default_base.to_string());
+        
+        if base.ends_with('/') {
+            base.pop();
+        }
+
         Self {
             api_key: config.api_key.trim().to_string(),
-            api_base: config.api_base.clone()
-                .map(|s| s.trim().to_string())
-                .filter(|s| !s.is_empty())
-                .unwrap_or_else(|| default_base.to_string()),
+            api_base: base,
             model: model.trim().to_lowercase(),
         }
     }
