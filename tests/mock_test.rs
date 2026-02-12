@@ -20,10 +20,12 @@ fn test_agent_initialization() {
                 api_key: "fake-key".to_string(),
                 api_base: None,
             }),
+            gemini: None,
             openrouter: None,
             zhipu: None,
             vllm: None,
         },
+        channels: Default::default(),
         tools: ToolsConfig {
             web: WebToolsConfig {
                 search: WebSearchConfig {

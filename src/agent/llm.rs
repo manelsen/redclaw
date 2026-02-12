@@ -72,7 +72,9 @@ impl LLMClient {
 
         if let Some(t) = tools {
             if !t.is_empty() {
-                body.as_object_mut().unwrap().insert("tools".to_string(), serde_json::json!(t));
+                if let Some(obj) = body.as_object_mut() {
+                    obj.insert("tools".to_string(), serde_json::json!(t));
+                }
             }
         }
 
@@ -107,9 +109,19 @@ impl LLMClient {
 
         let stdout_str = String::from_utf8_lossy(&output.stdout);
         
+        // Check for API errors before parsing as success
+        let val: Value = serde_json::from_str(&stdout_str)
+            .map_err(|e| anyhow!("Failed to parse JSON response: {}. Body: {}", e, stdout_str))?;
+        
+        if let Some(error) = val.get("error") {
+            let msg = error.get("message").and_then(|m| m.as_str()).unwrap_or("Unknown API Error");
+            let code = error.get("code").map(|c| c.to_string()).unwrap_or_else(|| "no code".to_string());
+            return Err(anyhow!("LLM Provider Error ({}): {}", code, msg));
+        }
+
         // Handle potential non-JSON or error JSON responses
-        let chat_resp: ChatResponse = serde_json::from_str(&stdout_str)
-            .map_err(|e| anyhow!("Failed to parse LLM response: {}. Body: {}", e, stdout_str))?;
+        let chat_resp: ChatResponse = serde_json::from_value(val)
+            .map_err(|e| anyhow!("Failed to map LLM response to ChatResponse: {}. Body: {}", e, stdout_str))?;
         
         chat_resp.choices.into_iter().next()
             .map(|c| c.message)
